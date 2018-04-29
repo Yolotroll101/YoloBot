@@ -42,7 +42,7 @@ async def mute(ctx, user: discord.Member):
     await ctx.say('```css\n That user has been muted.\n```')
     
 @bot.command()
-async def time(ctx):
+async def bottime(ctx):
     t = (2009, 2, 17, 17, 3, 38, 1, 48, 0)
     t = time.mktime(t)
     await ctx.say('The current time is now ' + time.strftime('%H:%M:%S') + ' in my timezone')
