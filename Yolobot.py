@@ -11,6 +11,8 @@ client = discord.Client()
 bot = commands.Bot(command_prefix='~')
 bot.remove_command('help')
 
+startup_extensions = ["cogs"]
+
 class Owner():
     def __init__(self, bot):
         self.bot = bot
@@ -20,7 +22,7 @@ async def __local_check(self, ctx):  #Sets some things up
 
 @bot.event
 async def on_ready():  #does more shit
-    print("I'm fucking ready, where the fuck are you lol?")
+    print("YoloBot is now online!")
     botchannel = bot.get_channel(439486977490944011)
     await botchannel.send('YoloBot is now online!')
     await bot.change_presence(activity=discord.Game(name='Type ~help!'))
@@ -37,22 +39,31 @@ async def disconnect(ctx):
 @commands.has_any_role('Your King', 'Admin', 'Mod')
 async def mute(ctx, user: discord.Member):
     mute = discord.utils.get(ctx.guild.roles, name='Muted')
-    user = ctx.message.author
     await user.add_roles(mute)
-    await ctx.say('```css\n That user has been muted.\n```')
+    await ctx.send('```css\n That user has been muted.\n```')
     
 @bot.command()
 async def bottime(ctx):
     t = (2009, 2, 17, 17, 3, 38, 1, 48, 0)
     t = time.mktime(t)
-    await ctx.say('The current time is now ' + time.strftime('%H:%M:%S') + ' in my timezone')
+    await ctx.send('The current time is now ' + time.strftime('%H:%M:%S') + ' in my timezone')
     
 @bot.event
 async def on_message(message):
     if message.content == 'YoloBot is trash':
         await message.channel.send('fuck you too.')
+    elif message.content == 'die in a hole':
+        await message.channel.send('stfu')
+    elif message.content == 'yolobot is a bot that is made by yolotroll101':
+        await message.channel.send('That is 100 percent true! :grin:')
     await bot.process_commands(message)
 
+@bot.command()
+@commands.has_any_role('Your King', 'Admin')
+async def createrole(ctx, a: int):
+    guild = ctx.guild
+    await guild.create_role(name=a)
+    
 @bot.command()
 @commands.has_any_role('Your King', 'Admin', 'Mod')  #Goes offline
 async def roletester(ctx):
@@ -102,15 +113,38 @@ async def divide(ctx, a: int, b: int):  #This is the group of commands for the c
 
 @bot.command()
 async def ping(ctx):
-    if a == None:
-        await ctx.say('You need to use 2 numbers!')
-    else:
         await ctx.send('`PONG! :P~`')
-
+        
+@bot.command()
+async def load(extention_name : "cogs"):
+    try:
+        bot.load_extension(extension_name)
+    except (AttributeError, ImportError) as e:
+        await bot.say("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
+    return
+    await bot.say("{} loaded.".format(extension_name))
+        
 @bot.command()
 async def cookie(ctx):
     await ctx.send(':cookie:')
 
+@bot.command()
+async def botinfo(ctx):
+    embed = discord.Embed(title="YoloBot", description="Yolotroll101's first bot! I'm currently under construction!", color=0x00FF00)
+    
+    # give info about you here
+    embed.add_field(name="My creator:", value="Yolotroll101")
+    
+    # Shows the number of servers the bot is member of.
+    embed.add_field(name="How many servers I'm on:", value=f"{len(bot.guilds)}")
+
+    # give users a link to invite thsi bot to their server
+    embed.add_field(name="Invite me here:", value="https://discordapp.com/oauth2/authorize?client_id=438176819187941416&scope=YoloBot&permissions=2146958591")
+    
+    embed.add_field(name="Donate to my creator for better updates!", value="paypal.me/YoloBot")
+
+    await ctx.send(embed=embed)
+    
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -121,10 +155,10 @@ async def on_command_error(ctx, error):
         await cmd_error3(ctx)
     elif isinstance(error, commands.CheckFailure):
         await cmd_error4(ctx)
-    elif isinstance(error, commands.CommandInvokeError():
+    elif isinstance(error, commands.CommandInvokeError):
         await cmd_error5(ctx)
+        raise error
         
-#Ping command
 async def cmd_error(ctx):
     await ctx.channel.send('```css\nThat command does not exist, did you misspell it?```')
 
@@ -142,7 +176,7 @@ async def cmd_error5(ctx):
 
 @bot.command()
 async def help(ctx):
-    await ctx.send("```css\nYolobot Help\nDebug commands\n--------------\n~help = Shows the help list\n~ping = tests if the bot responds\n~tatltuae = The answer\n~Cookie = creates a cookie!\n \nUn-categorized commands\n-----------------------\nTime = Shows the time\n \nRole commands\n-------------\n~listroles [requires Mod role or higher] = Lists all roles and their ID's.\n~roletester = Tests to see if the required roles thingy-mobabber works.\n \nModeration Commands\n-------------------\n~mute [Requires Mod role or higher] = Mutes a specified user. *does not currently work.\n \nOther commands\n--------------\n~Calculator <add/subtract/multiply/divide> = A calculator, duh.\n~disconnect [Bot Owner Only] = Disconnects the bot.```")
+    await ctx.send("```css\nYolobot Help\nDebug commands\n--------------\n~help = Shows the help list\n~ping = tests if the bot responds\n~tatltuae = The answer\n~Cookie = creates a cookie!\n \nUn-categorized commands\n-----------------------\nTime = Shows the time\n \nRole commands\n-------------\n~listroles [requires Mod role or higher] = Lists all roles and their ID's.\n~roletester = Tests to see if the required roles thingy-mobabber works.\n \nModeration Commands\n-------------------\n~mute [Requires Mod role or higher] = Mutes a specified user.\n \nOther commands\n--------------\n~Calculator <add/subtract/multiply/divide> = A calculator, duh.\n~disconnect [Bot Owner Only] = Disconnects the bot.```")
 
 @bot.command()
 async def tatltuae(ctx, member: discord.Member = None):
