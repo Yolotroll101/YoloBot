@@ -192,4 +192,4 @@ async def info(ctx, user: discord.Member):
     await ctx.send('The users highest role is: {}'.format(user.top_role))
     await ctx.send('The user joined at: {}'.format(user.joined_at))
 
-bot.run('NDM4MTc2ODE5MTg3OTQxNDE2.DcTmFw.SoXBcImAbLzB69KHHvb9hqxCIx4')
+bot.run('insert fucking token god dammit my bot was declined because of this haha jokes.')
