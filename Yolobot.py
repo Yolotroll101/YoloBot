@@ -1,4 +1,3 @@
-#Imports stuff so the commands can work
 import discord
 from discord.ext.commands import Bot
 from discord.ext import commands
@@ -17,24 +16,40 @@ class Owner():
     def __init__(self, bot):
         self.bot = bot
 
-async def __local_check(self, ctx):  #Sets some things up
+async def __local_check(self, ctx):
     return await self.bot.is_owner(ctx.author)
 
 @bot.event
-async def on_ready():  #does more shit
+async def on_ready():
     print("YoloBot is now online!")
     botchannel = bot.get_channel(439486977490944011)
     await botchannel.send('YoloBot is now online!')
     await bot.change_presence(activity=discord.Game(name='Type ~help!'))
     bot.appinfo = await bot.application_info()
-
+    
+@bot.command()
+async def shitcheecks(ctx):
+    await ctx.send('eat dick')
+    
+@bot.command()
+@commands.has_any_role('Your King', 'Admin')
+async def ban(ctx, user: discord.Member, a):
+    await ctx.ban(user)
+    await ctx.send(user + ' has been banned because: ' + a)
+    
+@bot.command()
+@commands.has_any_role('Your King', 'Admin')
+async def kick(ctx, user: discord.Member, a):
+    await ctx.kick(user)
+    await ctx.send(user + ' has been kicked because: ' + a)
+    
 @bot.command()
 @commands.is_owner()
 async def disconnect(ctx):
     botchannel = bot.get_channel(439486977490944011)
     await botchannel.send('YoloBot is now offline')
-    await bot.logout()  #This is the code ran on booting up the bot
-
+    await bot.logout()
+    
 @bot.command()
 @commands.has_any_role('Your King', 'Admin', 'Mod')
 async def mute(ctx, user: discord.Member):
@@ -42,6 +57,21 @@ async def mute(ctx, user: discord.Member):
     await user.add_roles(mute)
     await ctx.send('```css\n That user has been muted.\n```')
     
+@bot.group()
+async def secret(ctx):
+    if ctx.invoked_subcommand == None:
+        await ctx.channel.send('```css\nThat command does not exist, did you misspell it?```')
+        
+@secret.command()
+async def commands(ctx):
+    await ctx.send("```css\nYoloBot's secret commands\n-------------------------\n~shitcheecks = replys with 'fuck you'\n~say = Makes the bot say shit.```")
+        
+@bot.command()
+async def say(ctx, *args):
+    msg = ' '.join(args)
+    await ctx.delete_message(ctx.message)
+    return await ctx.say(msg)
+        
 @bot.command()
 async def bottime(ctx):
     t = (2009, 2, 17, 17, 3, 38, 1, 48, 0)
@@ -56,16 +86,36 @@ async def on_message(message):
         await message.channel.send('stfu')
     elif message.content == 'yolobot is a bot that is made by yolotroll101':
         await message.channel.send('That is 100 percent true! :grin:')
+    elif message.content == 'ur mom gae':
+        await message.channel.send('no u')
+    elif message.content == 'Monika is the best':
+        await message.channel.send('NO, YURI IS BEST GIRL!')
     await bot.process_commands(message)
 
 @bot.command()
-@commands.has_any_role('Your King', 'Admin')
-async def createrole(ctx, a: int):
-    guild = ctx.guild
-    await guild.create_role(name=a)
+async def give(ctx, *args):
+    user = ctx.author
+    arg = ' '.join(args)
+    meme = discord.utils.get(ctx.guild.roles, name='one of the good ones')
+    porn = discord.utils.get(ctx.guild.roles, name='porn mofo')
+    if arg == 'me fucking porn':
+        await user.add_roles(porn)
+        await ctx.send('Here you go, weird mother fucker...')
+    elif arg == 'me memes':
+        await user.add_roles(meme)
+        await ctx.send('Here you go, my son.')
+    else:
+        await ctx.send('I did not recognize the argument `{}`'.format(arg))
     
 @bot.command()
-@commands.has_any_role('Your King', 'Admin', 'Mod')  #Goes offline
+@commands.has_any_role('Your King', 'Admin')
+async def createrole(ctx, a):
+    guild = ctx.guild
+    await guild.create_role(name=a)
+    await ctx.send("A role named '" + a + "' has been created!")
+    
+@bot.command()
+@commands.has_any_role('Your King', 'Admin', 'Mod')
 async def roletester(ctx):
     await ctx.send('You have the required role!')
 
@@ -73,41 +123,40 @@ async def roletester(ctx):
 @commands.has_any_role('Your King', 'Admin')
 async def listroles(ctx):
     rolelist = ''
-    for r in ctx.guild.roles:  #Some things that don't require you to use the prefix.
+    for r in ctx.guild.roles:
         rolelist += '{}: {}\n'.format(r.id, r.name)
     await ctx.send('All roles on this server: \n' + rolelist)
 
 @bot.group(pass_context=True)
 async def calculator(ctx):
     if ctx.invoked_subcommand == None:
-        await ctx.say('You need to add a function!')
+        await ctx.send('You need to add a function!')
 
-#test bullshit lol
 @calculator.command()
 async def add(ctx, a: int, b: int):
     if a == None:
-        await ctx.say('You need to use 2 numbers!')
+        await ctx.send('You need to use 2 numbers!')
     else:
         await ctx.send(a + b)
     
 @calculator.command()
-async def subtract(ctx, a: int, b: int):  #Lists the roles and their ID's
+async def subtract(ctx, a: int, b: int):
     if a == None:
-        await ctx.say('You need to use 2 numbers!')
+        await ctx.send('You need to use 2 numbers!')
     else:
         await ctx.send(a - b)
 
 @calculator.command()
 async def multiply(ctx, a: int, b: int):
     if a == None:
-        await ctx.say('You need to use 2 numbers!')
+        await ctx.send('You need to use 2 numbers!')
     else:
         await ctx.send(a * b)
 
 @calculator.command()
-async def divide(ctx, a: int, b: int):  #This is the group of commands for the calculator
+async def divide(ctx, a: int, b: int):
     if a == None:
-        await ctx.say('You need to use 2 numbers!')
+        await ctx.send('You need to use 2 numbers!')
     else:
         await ctx.send(a / b)
 
@@ -163,7 +212,7 @@ async def cmd_error(ctx):
     await ctx.channel.send('```css\nThat command does not exist, did you misspell it?```')
 
 async def cmd_error2(ctx):
-    await ctx.channel.send('```css\nYou are missing an argument. Please add one!```')  #Cookie command
+    await ctx.channel.send('```css\nYou are missing an argument. Please add one!```')
 
 async def cmd_error3(ctx):
     await ctx.channel.send('```css\nYou have used an invalid argument. Please use a valid one.```')
@@ -174,10 +223,24 @@ async def cmd_error4(ctx):
 async def cmd_error5(ctx):
     await ctx.channel.send('```css\nThere seems to have been a problem with the command. Please notify my creator about this.\n```')
 
-@bot.command()
+@bot.group()
 async def help(ctx):
-    await ctx.send("```css\nYolobot Help\nDebug commands\n--------------\n~help = Shows the help list\n~ping = tests if the bot responds\n~tatltuae = The answer\n~Cookie = creates a cookie!\n \nUn-categorized commands\n-----------------------\nTime = Shows the time\n \nRole commands\n-------------\n~listroles [requires Mod role or higher] = Lists all roles and their ID's.\n~roletester = Tests to see if the required roles thingy-mobabber works.\n \nModeration Commands\n-------------------\n~mute [Requires Mod role or higher] = Mutes a specified user.\n \nOther commands\n--------------\n~Calculator <add/subtract/multiply/divide> = A calculator, duh.\n~disconnect [Bot Owner Only] = Disconnects the bot.```")
+    if ctx.invoked_subcommand == None:
+        await ctx.send("```css\nYolobot Help\nDebug commands\n--------------\n~help = Shows the help list\n~other help = Shows other help commands.\n~ping = tests if the bot responds\n~tatltuae = The answer\n~Cookie = creates a cookie!\n \nUn-categorized commands\n-----------------------\n~bottime = Shows the time\n \nRole commands\n-------------\n~listroles [requires Mod role or higher] = Lists all roles and their ID's.\n~createrole [Requires Admin or higher] = Creates a role with the specified name.\n~give <request a role that is avaible> = gives yourself a role. Type '~help give' for more info.\n~roletester = Tests to see if the required roles thingy-mobabber works.\n \nModeration Commands\n-------------------\n~mute [Requires Mod role or higher] = Mutes a specified user.\n \nOther commands\n--------------\n~Calculator <add/subtract/multiply/divide> = A calculator, duh.\n~disconnect [Bot Owner Only] = Disconnects the bot.```")
 
+@help.command()
+async def give(ctx):
+    await ctx.send('```css\nUsage: ~give <rolename>.\nAvaible roles: (~give) me memes; me fucking porn.```')
+        
+@bot.group()
+async def other(ctx):
+    if ctx.invoked_subcommand == None:
+        await ctx.send('```css\nThat command does not exist, did you misspell it?```')
+        
+@other.command()
+async def help(ctx):
+    await ctx.send('```css\nCommands with help listings\n---------------------------\n~give (gives yourself a role)```')
+    
 @bot.command()
 async def tatltuae(ctx, member: discord.Member = None):
     if member is None:
