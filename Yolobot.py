@@ -1,3 +1,4 @@
+#Imports stuff so the commands can work
 import discord
 from discord.ext.commands import Bot
 from discord.ext import commands
@@ -16,13 +17,15 @@ class Owner():
     def __init__(self, bot):
         self.bot = bot
 
-async def __local_check(self, ctx):
+async def __local_check(self, ctx):  #Sets some things up
     return await self.bot.is_owner(ctx.author)
 
 @bot.event
-async def on_ready():
+async def on_ready():  #does more shit
     print("YoloBot is now online!")
     botchannel = bot.get_channel(439486977490944011)
+    botchannelfuckyou = bot.get_channel(442126446886912000)
+    await botchannelfuckyou.send('YoloBot is now online!')
     await botchannel.send('YoloBot is now online!')
     await bot.change_presence(activity=discord.Game(name='Type ~help!'))
     bot.appinfo = await bot.application_info()
@@ -48,7 +51,7 @@ async def kick(ctx, user: discord.Member, a):
 async def disconnect(ctx):
     botchannel = bot.get_channel(439486977490944011)
     await botchannel.send('YoloBot is now offline')
-    await bot.logout()
+    await bot.logout()  #This is the code ran on booting up the bot
     
 @bot.command()
 @commands.has_any_role('Your King', 'Admin', 'Mod')
@@ -63,14 +66,14 @@ async def secret(ctx):
         await ctx.channel.send('```css\nThat command does not exist, did you misspell it?```')
         
 @secret.command()
-async def commands(ctx):
-    await ctx.send("```css\nYoloBot's secret commands\n-------------------------\n~shitcheecks = replys with 'fuck you'\n~say = Makes the bot say shit.```")
+async def shit(ctx):
+    await ctx.send("```css\nYoloBot's secret commands\n-------------------------\n~shitcheecks = replys with 'fuck you'\n~FuckMeDaddy = get fucked in the ass\n~say = Makes the bot say shit.```")
         
 @bot.command()
 async def say(ctx, *args):
     msg = ' '.join(args)
-    await ctx.delete_message(ctx.message)
-    return await ctx.say(msg)
+    await ctx.message.delete()
+    return await ctx.send(msg)
         
 @bot.command()
 async def bottime(ctx):
@@ -79,19 +82,35 @@ async def bottime(ctx):
     await ctx.send('The current time is now ' + time.strftime('%H:%M:%S') + ' in my timezone')
     
 @bot.event
-async def on_message(message):
-    if message.content == 'YoloBot is trash':
-        await message.channel.send('fuck you too.')
-    elif message.content == 'die in a hole':
-        await message.channel.send('stfu')
-    elif message.content == 'yolobot is a bot that is made by yolotroll101':
-        await message.channel.send('That is 100 percent true! :grin:')
-    elif message.content == 'ur mom gae':
-        await message.channel.send('no u')
-    elif message.content == 'Monika is the best':
-        await message.channel.send('NO, YURI IS BEST GIRL!')
+async def on_message(message, member: discord.Member = None):
+    if member is None:
+        member = message.author.mention
+        if message.content == 'YoloBot is trash':
+            await message.channel.send('fuck you too.')
+        elif message.content == 'die in a hole':
+            await message.channel.send('stfu')
+        elif message.content == 'yolobot is a bot that is made by yolotroll101':
+            await message.channel.send('That is 100 percent true! :grin:')
+        elif message.content == 'ur mom gae':
+            await message.channel.send('no u')
+        elif message.content == 'Monika is the best':
+            await message.channel.send('NO, YURI IS BEST GIRL!')
+        elif message.content == 'Yolobot is a fucking moron and deserved to die. He is a fucking douche with no fucking respect for my niggas':
+            await message.delete()
+            await message.channel.send('fuck you {0}'.format(member))
+        elif message.content == '₿':
+            await message.delete()
+            await message.channel.send('bitcoin my guys')
+        elif message.content == 'i want to die':
+            await message.channel.send('I will not allow that.')
     await bot.process_commands(message)
 
+@bot.command()
+async def FuckMeDaddy(ctx, member: discord.Member = None):
+    if member is None:
+        member = ctx.author.mention
+    await ctx.send('{0} **HARDER** *moooaaannnnnn*')
+    
 @bot.command()
 async def give(ctx, *args):
     user = ctx.author
@@ -115,7 +134,7 @@ async def createrole(ctx, a):
     await ctx.send("A role named '" + a + "' has been created!")
     
 @bot.command()
-@commands.has_any_role('Your King', 'Admin', 'Mod')
+@commands.has_any_role('Your King', 'Admin', 'Mod')  #Goes offline
 async def roletester(ctx):
     await ctx.send('You have the required role!')
 
@@ -123,7 +142,7 @@ async def roletester(ctx):
 @commands.has_any_role('Your King', 'Admin')
 async def listroles(ctx):
     rolelist = ''
-    for r in ctx.guild.roles:
+    for r in ctx.guild.roles:  #Some things that don't require you to use the prefix.
         rolelist += '{}: {}\n'.format(r.id, r.name)
     await ctx.send('All roles on this server: \n' + rolelist)
 
@@ -132,6 +151,7 @@ async def calculator(ctx):
     if ctx.invoked_subcommand == None:
         await ctx.send('You need to add a function!')
 
+#test bullshit lol
 @calculator.command()
 async def add(ctx, a: int, b: int):
     if a == None:
@@ -140,7 +160,7 @@ async def add(ctx, a: int, b: int):
         await ctx.send(a + b)
     
 @calculator.command()
-async def subtract(ctx, a: int, b: int):
+async def subtract(ctx, a: int, b: int):  #Lists the roles and their ID's
     if a == None:
         await ctx.send('You need to use 2 numbers!')
     else:
@@ -154,7 +174,7 @@ async def multiply(ctx, a: int, b: int):
         await ctx.send(a * b)
 
 @calculator.command()
-async def divide(ctx, a: int, b: int):
+async def divide(ctx, a: int, b: int):  #This is the group of commands for the calculator
     if a == None:
         await ctx.send('You need to use 2 numbers!')
     else:
@@ -212,7 +232,7 @@ async def cmd_error(ctx):
     await ctx.channel.send('```css\nThat command does not exist, did you misspell it?```')
 
 async def cmd_error2(ctx):
-    await ctx.channel.send('```css\nYou are missing an argument. Please add one!```')
+    await ctx.channel.send('```css\nYou are missing an argument. Please add one!```')  #Cookie command
 
 async def cmd_error3(ctx):
     await ctx.channel.send('```css\nYou have used an invalid argument. Please use a valid one.```')
@@ -230,7 +250,11 @@ async def help(ctx):
 
 @help.command()
 async def give(ctx):
-    await ctx.send('```css\nUsage: ~give <rolename>.\nAvaible roles: (~give) me memes; me fucking porn.```')
+    await ctx.send('```diff\n- Usage: ~give <rolename>.\n+ Avaible roles: (~give) me memes; me fucking porn.```')
+        
+@help.command()
+async def info(ctx):
+    await ctx.send('```diff\n- Usage: ~info <Username>.```')
         
 @bot.group()
 async def other(ctx):
@@ -239,7 +263,7 @@ async def other(ctx):
         
 @other.command()
 async def help(ctx):
-    await ctx.send('```css\nCommands with help listings\n---------------------------\n~give (gives yourself a role)```')
+    await ctx.send('```css\nCommands with help listings\n---------------------------\n~give (gives yourself a role)\n~info (gives info on a member)```')
     
 @bot.command()
 async def tatltuae(ctx, member: discord.Member = None):
@@ -255,4 +279,4 @@ async def info(ctx, user: discord.Member):
     await ctx.send('The users highest role is: {}'.format(user.top_role))
     await ctx.send('The user joined at: {}'.format(user.joined_at))
 
-bot.run('insert fucking token god dammit my bot was declined because of this haha jokes.')
+bot.run('NDM4MTc2ODE5MTg3OTQxNDE2.Dczm6w.WcjZOarcKwOe49yh_RCKIT03iFA')
