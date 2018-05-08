@@ -10,5 +10,10 @@ Yea, don't. **BUT** if you are in the allowed users list, you may. Notify mt abo
 # "How do I find the commands?"
 if you are a fucking **NOOB**, then I have the solution! TYPE **FUCKING** ***~help***! >:(((
 
-# I like big textj
-kill me lolzerz xd
+# To the people who approve the bots
+I made this github repo for a reason. C  L  O  N  E    I  T    A  N  D    T  E  S  T    I  T  .
+
+
+
+
+like srsly tho, 2nd decline omfg
