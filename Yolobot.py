@@ -6,6 +6,7 @@ import asyncio
 import time
 import logging
 import traceback
+import config
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='~')
@@ -19,7 +20,7 @@ class Owner():
 
 async def __local_check(self, ctx):  #Sets some things up
     return await self.bot.is_owner(ctx.author)
-
+    
 @bot.event
 async def on_ready():  #does more shit
     print("YoloBot is now online!")
@@ -30,6 +31,36 @@ async def on_ready():  #does more shit
     await bot.change_presence(activity=discord.Game(name='Type ~help!'))
     bot.appinfo = await bot.application_info()
     
+@bot.event
+async def on_guild_join(guild):
+    async def find_channel(guild):
+        for c in guild.text_channels:
+            if not c.permissions_for(guild.me).send_messages:
+                continue
+            return c
+        
+    channel = await find_channel(guild)
+    guild = guild
+    await guild.create_role(name="Admin", colour=discord.Colour(0xFF0000))
+    await guild.create_role(name="Mod", colour=discord.Colour(0x2EFE2E))
+    
+    embed = discord.Embed(title="Thanks for inviting me!", description="Type ~help to get started!", color=0x82FA58)
+    
+    embed.add_field(name="I added two roles:", value="Mod and Admin.")
+    
+    embed.add_field(name="You can donate!", value="Donating will help me make a website, and even a VPS! You can get the link with '~botinfo'!")
+    
+    await channel.send(embed=embed)
+    
+@bot.command()
+async def testdmembed(ctx, user: discord.Member):
+    
+    embed = discord.Embed(title="Test", description="stuff")
+    
+    embed.add_field(name="sotp", value="ptos")
+    
+    await client.send_message(user, embed=embed)
+    
 @bot.command()
 async def shitcheecks(ctx):
     await ctx.send('eat dick')
@@ -37,14 +68,21 @@ async def shitcheecks(ctx):
 @bot.command()
 @commands.has_any_role('Your King', 'Admin')
 async def ban(ctx, user: discord.Member, a):
-    await ctx.ban(user)
+    await Guild.ban(userName)
     await ctx.send(user + ' has been banned because: ' + a)
+    
+    embed = discord.Embed(title="You have been banned.", desciption="You can still appeal here: https://goo.gl/forms/vAKg8A8dR2nJwIIe2", color=0xFF0000)
+    
+    embed.add_field(name="Reason of ban:", value=a)
+    
+    await ctx.send_message(user, embed=embed)
     
 @bot.command()
 @commands.has_any_role('Your King', 'Admin')
 async def kick(ctx, user: discord.Member, a):
-    await ctx.kick(user)
+    await Guild.kick(userName)
     await ctx.send(user + ' has been kicked because: ' + a)
+    await client.send_message(some_user, "You have been kicked because\n" + a + ".\nYou have only been kicked, so you may rejoin.")
     
 @bot.command()
 @commands.is_owner()
@@ -103,6 +141,8 @@ async def on_message(message, member: discord.Member = None):
             await message.channel.send('bitcoin my guys')
         elif message.content == 'i want to die':
             await message.channel.send('I will not allow that.')
+        elif message.content == 'Abby rules!':
+            await ctx.send('My sister forced me to do this ;-;')
     await bot.process_commands(message)
 
 @bot.command()
@@ -242,11 +282,19 @@ async def cmd_error4(ctx):
     
 async def cmd_error5(ctx):
     await ctx.channel.send('```css\nThere seems to have been a problem with the command. Please notify my creator about this.\n```')
-
+    
+@bot.command()
+async def oof(ctx):
+    try:
+        await ctx.message.delete()
+        await ctx.send('<:oof:443922643222134784>')
+    except:
+        pass
+    
 @bot.group()
 async def help(ctx):
     if ctx.invoked_subcommand == None:
-        await ctx.send("```css\nYolobot Help\nDebug commands\n--------------\n~help = Shows the help list\n~other help = Shows other help commands.\n~ping = tests if the bot responds\n~tatltuae = The answer\n~Cookie = creates a cookie!\n \nUn-categorized commands\n-----------------------\n~bottime = Shows the time\n \nRole commands\n-------------\n~listroles [requires Mod role or higher] = Lists all roles and their ID's.\n~createrole [Requires Admin or higher] = Creates a role with the specified name.\n~give <request a role that is avaible> = gives yourself a role. Type '~help give' for more info.\n~roletester = Tests to see if the required roles thingy-mobabber works.\n \nModeration Commands\n-------------------\n~mute [Requires Mod role or higher] = Mutes a specified user.\n \nOther commands\n--------------\n~Calculator <add/subtract/multiply/divide> = A calculator, duh.\n~disconnect [Bot Owner Only] = Disconnects the bot.```")
+        await ctx.send("```css\nYolobot Help\nDebug commands\n--------------\n~help = Shows the help list\n~other help = Shows other help commands.\n~ping = tests if the bot responds\n~tatltuae = The answer\n~Cookie = creates a cookie!\n \nUn-categorized commands\n-----------------------\n~bottime = Shows the time\n \nRole commands\n-------------\n~listroles [requires Mod role or higher] = Lists all roles and their ID's.\n~createrole [Requires Admin or higher] = Creates a role with the specified name.\n~give <request a role that is avaible> = gives yourself a role. Type '~help give' for more info.\n~roletester = Tests to see if the required roles thingy-mobabber works.\n \nModeration Commands\n-------------------\n~mute [Requires Mod role or higher] = Mutes a specified user.\n \nFun commands\n------------\n~oof = 'OOF'.\n \nOther commands\n--------------\n~Calculator <add/subtract/multiply/divide> = A calculator, duh.\n~disconnect [Bot Owner Only] = Disconnects the bot.```")
 
 @help.command()
 async def give(ctx):
@@ -279,4 +327,5 @@ async def info(ctx, user: discord.Member):
     await ctx.send('The users highest role is: {}'.format(user.top_role))
     await ctx.send('The user joined at: {}'.format(user.joined_at))
 
-bot.run('for the love of god sotp hacks pleas. MAKE DISCORD GREAT AGAIN and fuck you prick hackers')
+#you ain;t hacking me no more fool.
+config.bot_token
