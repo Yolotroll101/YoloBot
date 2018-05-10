@@ -279,4 +279,4 @@ async def info(ctx, user: discord.Member):
     await ctx.send('The users highest role is: {}'.format(user.top_role))
     await ctx.send('The user joined at: {}'.format(user.joined_at))
 
-bot.run('NDM4MTc2ODE5MTg3OTQxNDE2.Dczm6w.WcjZOarcKwOe49yh_RCKIT03iFA')
+bot.run('for the love of god sotp hacks pleas. MAKE DISCORD GREAT AGAIN and fuck you prick hackers')
