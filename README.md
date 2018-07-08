@@ -13,7 +13,8 @@ if you are a fucking **NOOB**, then I have the solution! TYPE **FUCKING** ***~he
 # To the people who approve the bots
 I made this github repo for a reason. C  L  O  N  E    I  T    A  N  D    T  E  S  T    I  T  .
 
-
+# Known Bugs
+using strikethrough can trigger the bot sometimes. Trying to fix lol.
 
 
 like srsly tho, 2nd decline omfg
